@@ -16,3 +16,31 @@
 		diameterOfBinaryTree(root, re);
 		return re;
 	}
+//470.用 Rand7() 实现 Rand10()
+	int rand7()
+	{
+		//预先提供的
+		return Random::GenerateSingleRandomInt(1, 7);
+	}
+	int rand49()
+	{
+		int num1 = rand7(), num2 = rand7();
+		return 7 * num1 + num2 - 7;
+	}
+	int rand40()
+	{
+		int num = rand49();
+		while (num > 40)
+		{
+			num = rand49();
+		}
+		return num;
+	}
+	int rand10()
+	{
+		//第一步: 利用rand7()实现rand49(): 7*num1+num2-7
+		//第二步: 利用rand49()实现rand40(): 拒绝采样(大于40的话重新生成)
+		//第三步: 利用rand40()实现rand10(): (num+3)/4
+		int num = rand40();
+		return (num + 3) / 4;
+	}
