@@ -1,0 +1,18 @@
+//543.二叉树的直径: 任意两个节点之间最长路径(可以不经过根节点)的长度
+	int diameterOfBinaryTree(TreeNode* root, int& MaxPathLen)
+	{   //递归函数. MaxPathLen为全局(整棵树, 并不是以root为根的子树)的最大路径长度, 返回值为当前子树可往上层传递(不能是"左+root+右"的路径)的最大长度(要么是左要么是右)
+		if (!root || (!root->left && !root->right))return 0;
+		//如果不存在左孩子, 那么当前根节点(root)左边的最大路径长度就是0; 否则, 进入左孩子递归.
+		int LeftMax = (root->left ? 1 + diameterOfBinaryTree(root->left, MaxPathLen) : 0);
+		int RightMax = (root->right ? 1 + diameterOfBinaryTree(root->right, MaxPathLen) : 0);
+		//运行到这里, LeftMax和RightMax分别表示: 左右孩子的最大路径长度
+		MaxPathLen = max(LeftMax + RightMax, MaxPathLen); //当前子树的最大可能路径长度(一定是"左+root+右"形式, 但是这种形式的路径是不能向上层传递的)
+		return max(LeftMax, RightMax); //可以往上层传递(左或者右)的最大路径长度
+	}
+	int diameterOfBinaryTree(TreeNode* root)
+	{
+		//深度遍历. 时间复杂度O(n). 空间复杂度O(h). 与【124. 最大路径和】相似
+		int re = 0;
+		diameterOfBinaryTree(root, re);
+		return re;
+	}
