@@ -44,3 +44,25 @@
 		int num = rand40();
 		return (num + 3) / 4;
 	}
+//113.路径总和 II
+	void Do(TreeNode* root, int targetSum, vector<int>& CurPath, vector<vector<int>>& re)
+	{
+		if (!root)return;
+		if (!root->left && !root->right)
+		{
+			if (root->val == targetSum)
+			{
+				CurPath.push_back(targetSum);
+				re.push_back(CurPath);
+			}
+			return;
+		}
+
+
+
+
+	}
+	vector<vector<int>> pathSum(TreeNode* root, int targetSum)
+	{
+
+	}
