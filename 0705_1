@@ -44,25 +44,112 @@
 		int num = rand40();
 		return (num + 3) / 4;
 	}
-//113.路径总和 II
+//113.路径总和 II: 找出所有从根节点到叶子节点路径总和等于给定目标和的路径。
 	void Do(TreeNode* root, int targetSum, vector<int>& CurPath, vector<vector<int>>& re)
 	{
 		if (!root)return;
-		if (!root->left && !root->right)
+		CurPath.push_back(root->val);
+		if (!root->left && !root->right) //如果当前节点是叶子节点
 		{
-			if (root->val == targetSum)
+			if (root->val == targetSum) //找到了一条正确的路径
 			{
-				CurPath.push_back(targetSum);
 				re.push_back(CurPath);
 			}
+			CurPath.pop_back();
 			return;
 		}
-
-
-
-
+		Do(root->left, targetSum - root->val, CurPath, re);
+		Do(root->right, targetSum - root->val, CurPath, re);
+		CurPath.pop_back();
+	}
+	vector<int> GetPath(TreeNode* node, unordered_map<TreeNode*, TreeNode*>& map)
+	{   //返回从根节点到当前node节点的路径
+		vector<int> re;
+		while (node)
+		{
+			re.push_back(node->val);
+			auto it = map.find(node);
+			node = (it == map.end() ? nullptr : it->second);
+		}
+		reverse(re.begin(), re.end());
+		return re;
 	}
 	vector<vector<int>> pathSum(TreeNode* root, int targetSum)
 	{
+		//深度遍历(递归). 时间复杂度O(n^2), 空间复杂度O(n).
+		vector<int> CurPath; //当前的路径
+		vector<vector<int>> re;
+		Do(root, targetSum, CurPath, re);
+		return re;
+		
+		//广度(层次)遍历. 时间复杂度O(n^2), 空间复杂度O(n). 很慢!
+		/*
+		if (!root)return{ };
+		queue<TreeNode*> q;
+		queue<int> CurSum; //while循环每次开始前, CurSum和q的大小应该总是一样的
+		vector<vector<int>> re;
+		unordered_map<TreeNode*, TreeNode*> map; //找某个节点的父节点
+		q.push(root);
+		CurSum.push(0);
+		while (!q.empty())
+		{
+			TreeNode* CurNode = q.front();
+			q.pop();
+			if (!CurNode->left && !CurNode->right) //当前是叶子节点
+			{
+				if (CurSum.front() + CurNode->val == targetSum) //当前叶子节点满足条件
+				{
+					re.push_back(GetPath(CurNode, map)); //找到当前叶子节点所在的路径, 加入结果
+				}
+				CurSum.pop();
+				continue;
+			}
+			if (CurNode->left)
+			{
+				map[CurNode->left] = CurNode;
+				q.push(CurNode->left);
+				CurSum.push(CurSum.front() + CurNode->val);
+			}
+			if (CurNode->right)
+			{
+				map[CurNode->right] = CurNode;
+				q.push(CurNode->right);
+				CurSum.push(CurSum.front() + CurNode->val);
+			}
+			CurSum.pop();
+		}
+		return re;
+		*/
+
+	}
+	//39.组合总和: 找出无重复元素数组中可以使数字和为目标数target的所有不同组合, 同一个数字可以无限制重复被选取
+	void DoCombinationSum(vector<int>& candidates, int target, int StartIndex, vector<int>& Cur, vector<vector<int>>& re)
+	{   //target为当前路径下还需要的和, StartIndex为当前路径搜索下一个数字的起始位置, 假设当前Cur为[2,3], 最原始的target为10, 那么这里的target就是5
+		if (candidates[StartIndex] > target)return; //因为candidates是升序, 所以如果【起始位置处】比【当前还需要的和】还大, 那么后面就不可能出现满足条件的数
+		for (int i = StartIndex; i < candidates.size(); i++) //从StartIndex开始往后遍历
+		{
+			if (candidates[i] > target)break; //如果当前的数(例如是11)比target还大, 那么这里以及后面就不可能满足条件了
+			//运行到这里, 说明还是有可能满足条件
+			Cur.push_back(candidates[i]); //把当前位置的数加入当前路径
+			if (candidates[i] == target) //如果当前位置处恰好就是目前需要的数, 那么表示: 当前已经找到了一个可行组合
+			{
+				re.push_back(Cur);
+				Cur.pop_back(); //返回上一层之前, 要从【当前路径】中把这一层加入的(最后的一个)数弹出来
+				break;
+			}
+			//运行到这里, 说明加上了当前的数之后, 【当前的和】还是小于【目前需要的和】, 所以继续往下递归
+			DoCombinationSum(candidates, target - candidates[i], i, Cur, re); //计算下一层【需要的和】, 为了避免re中的重复组合, 下一层的起始位置一定在这一层起始位置的右边(或相等)
+			Cur.pop_back(); //返回上一层之前, 要从【当前路径】中把这一层加入的(最后的一个)数弹出来
+		}
+	}
+	vector<vector<int>> combinationSum(vector<int>& candidates, int target)
+	{
+		//排序+剪枝回溯. 时间复杂度为O(S), S为所有可行解的长度之和. 空间复杂度O(target).
+		if (candidates.empty())return {};
+		sort(candidates.begin(), candidates.end()); //先按升序排序, 方便剪枝
+		vector<int> Cur; //当前路径
+		vector<vector<int>> re;
+		DoCombinationSum(candidates, target, 0, Cur, re);
+		return re;
 
 	}
