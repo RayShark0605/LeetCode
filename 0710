@@ -1,0 +1,65 @@
+//221.最大正方形: 在一个0和1组成的二维矩阵中, 找到只包含1的最大正方形，并返回其面积
+	int maximalSquare(vector<vector<char>>& matrix) 
+	{
+		//二维动态规划+优化dp数组占用空间. 时间复杂度O(mn), 空间复杂度O(n).
+		//因为原dp[i][j]的值只与它上边(dp[i-1][j])、左边(dp[i][j-1])、左上角(dp[i-1][j-1])处有关, 所以可以只定义一个列长的一维数组, 再用一个PreLeft记录原左上角(dp[i-1][j-1])的数
+		int m = matrix.size(), n = matrix[0].size();
+		vector<int> dp(n, 0);
+		int PreLeft = 0, re = 0;
+		for (int i = 0; i < m; i++)
+		{
+			for (int j = 0; j < n; j++)
+			{
+				if (i == 0 || j == 0) //当前在最上面一行或者最左边的一列
+				{
+					PreLeft = dp[j]; //修改之前, 记录当前值
+					dp[j] = (matrix[i][j] == '1' ? 1 : 0);
+				}
+				else if(matrix[i][j] == '1') //当前不位于最上面和最左边, 而且是1
+				{
+					int temp = dp[j]; //备份当前位置原来的值
+					dp[j] = 1 + min(dp[j], min(dp[j - 1], PreLeft)); //计算当前dp数组新的值
+					PreLeft = temp; //原来的值还是记录在PreLeft中
+				}
+				else
+				{
+					dp[j] = 0; //这里不用记录PreLeft
+				}
+				re = max(re, dp[j]);
+			}
+		}
+		return re * re;
+
+
+		//二维动态规划. 时间复杂度O(mn), 空间复杂度O(mn).
+		/*
+		int m = matrix.size(), n = matrix[0].size();
+		vector<vector<int>> dp(m, vector<int>(n, 0)); //dp[i][j]表示: 以matrix[i][j]为右下角的最大全1正方形边长
+		int re = 0; //最大正方形边长
+		//二维遍历, 如果当前位置(matrix[i][j])为0, 那么dp[i][j]肯定就是0; 如果当前位置为1, 那么dp[i][j]就是dp[i-1][j],dp[i-1][j-1],dp[i][j-1](左上、左、上)的最小值+1
+		for (int i = 0; i < m; i++)
+		{
+			for (int j = 0; j < n; j++)
+			{
+				if (matrix[i][j] == '1')
+				{
+					if (i == 0 || j == 0)
+					{
+						dp[i][j] = 1;
+					}
+					else
+					{
+						dp[i][j] = 1 + min(dp[i - 1][j], min(dp[i - 1][j - 1], dp[i][j - 1]));
+					}
+					re = max(re, dp[i][j]);
+				}
+			}
+		}
+		return re * re;
+		*/
+	}
+	//718.最长重复子数组
+	int findLength(vector<int>& nums1, vector<int>& nums2) 
+	{
+
+	}
