@@ -1,24 +1,37 @@
+typedef unsigned int GEN_OBJ_T[7];
+typedef enum
+{
+	A, B, C, D, E, F, G, H, AUTO = 30, UNKNOW
+} COLOR_SYS_T;
+
+#pragma pack(4)
+typedef struct
+{
+	union
+	{
+		unsigned char u_char;
+		COLOR_SYS_T u_sys_type;
+		unsigned long int u_long_int : 24;
+		signed long long _long : 16;
+		int u_int[96 / UNKNOW];
+	}u;
+}GEN_SUB_OBJ_T;
+
+#pragma pack()
+typedef struct _my_obj_t
+{
+	signed char a;
+	GEN_OBJ_T obj;
+	GEN_SUB_OBJ_T sub_obj;
+	struct _my_obj_t* next;
+	struct _my_obj_t* prev;
+}MY_OBJ_T;
+
+
 int main(int argc, char* argv[])
 {
-	int a[5] = { 1,2,3,4,5 };
-	int* p = (int*)(&a + 1);
-
-	cout << "a=\t" << a << endl;
-	cout << "&a=\t" << &a << endl;
-	cout << "*a=\t" << *a << endl;
-	cout << "a+1=\t" << a + 1 << endl;
-	cout << "*(a+1)=\t" << *(a + 1) << endl;
-	cout << endl;
-
-	cout << "&a+1=\t" << &a + 1 << endl;
-	cout << "(&a)+1=\t" << (&a)+1 << endl;
-	cout << endl;
-
-	cout << "p=\t" << p << endl;
-	cout << "&p=\t" << &p << endl;
-	cout << "*p=\t" << *p << endl;
-	cout << "p-1=\t" << p - 1 << endl;
-	cout << "*(p-1)=\t" << *(p - 1) << endl;
+	cout << sizeof(MY_OBJ_T) << endl;
+	cout << sizeof(GEN_SUB_OBJ_T) << endl;
 
 	return 0;
 }
