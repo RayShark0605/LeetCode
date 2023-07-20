@@ -1,1 +1,24 @@
-https://resources.jetbrains.com/grazie/model/language-tool/6.0/zh-6.0.jar
+int main(int argc, char* argv[])
+{
+	int a[5] = { 1,2,3,4,5 };
+	int* p = (int*)(&a + 1);
+
+	cout << "a=\t" << a << endl;
+	cout << "&a=\t" << &a << endl;
+	cout << "*a=\t" << *a << endl;
+	cout << "a+1=\t" << a + 1 << endl;
+	cout << "*(a+1)=\t" << *(a + 1) << endl;
+	cout << endl;
+
+	cout << "&a+1=\t" << &a + 1 << endl;
+	cout << "(&a)+1=\t" << (&a)+1 << endl;
+	cout << endl;
+
+	cout << "p=\t" << p << endl;
+	cout << "&p=\t" << &p << endl;
+	cout << "*p=\t" << *p << endl;
+	cout << "p-1=\t" << p - 1 << endl;
+	cout << "*(p-1)=\t" << *(p - 1) << endl;
+
+	return 0;
+}
